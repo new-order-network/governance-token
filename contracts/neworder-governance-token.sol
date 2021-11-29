@@ -48,7 +48,8 @@ interface ITOKENLOCK {
      *
      * Requires msg.sender to:
      *
-     * - Must not be a prevoius lock for this address. If so, it must be first cleared with a call to {clearLock}.
+     * - If there was a prevoius lock for this address, tokens must first unlock through the passage of time, 
+     *      after which the lock must be cleared with a call to {clearLock} before calling this function again for the same address.     
      * - Must have at least a balance of `baseTokensLocked_` to lock
      * - Must provide non-zero `unlockEpoch_`
      * - Must have at least `unlockedPerEpoch_` tokens to unlock 
@@ -62,7 +63,10 @@ interface ITOKENLOCK {
      *
      * Requirements:
      *
-     * - msg.sender must not have any tokens locked, currently
+     * - msg.sender must not have any tokens locked, currently;
+     *      if there were tokens locked for msg.sender previously,
+     *      they must have all become unlocked through the passage of time
+     *      before calling this function.
      */
     function clearLock() external;
     
@@ -549,7 +553,8 @@ contract NewOrderGovernance is ERC20, ITOKENLOCK {
      *
      * Requires msg.sender to:
      *
-     * - Must not be a prevoius lock for this address. If so, it must be first cleared with a call to {clearLock}.
+     * - If there was a prevoius lock for this address, tokens must first unlock through the passage of time, 
+     *      after which the lock must be cleared with a call to {clearLock} before calling this function again for the same address.
      * - Must have at least a balance of `baseTokensLocked_` to lock
      * - Must provide non-zero `unlockEpoch_`
      * - Must have at least `unlockedPerEpoch_` tokens to unlock 
@@ -573,7 +578,10 @@ contract NewOrderGovernance is ERC20, ITOKENLOCK {
      *
      * Requirements:
      *
-     * - msg.sender must not have any tokens locked, currently
+     * - msg.sender must not have any tokens locked, currently;
+     *      if there were tokens locked for msg.sender previously,
+     *      they must have all become unlocked through the passage of time
+     *      before calling this function.
      */
     function clearLock() public virtual override{
         require(balanceLocked(msg.sender) == 0, ERROR_CLEARING_LOCK);

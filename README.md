@@ -14,7 +14,8 @@ Emits an {NewTokenLock} event indicating the updated terms of the token lockup.
      
 #### Requires
 
-- There must not exist a prevoius lock for this msg.sender. If so, it must be cleared with a call to {clearLock}.
+- If there was a prevoius lock for this address, tokens must first unlock through the passage of time, 
+     after which the lock must be cleared with a call to {clearLock} before calling this function again for the same address.     
 - msg.sender Must have at least a balance of `baseTokensLocked_` to lock
 - Must provide non-zero `unlockEpoch_`
 - msg.sender Must have at least `unlockedPerEpoch_` tokens to unlock 
@@ -24,8 +25,11 @@ Emits an {NewTokenLock} event indicating the updated terms of the token lockup.
 Reset the lock state, only if all tokens have been unlocked
      
 #### Requires
-- msg.sender must not have any tokens locked, currently
-    
+- msg.sender must not have any tokens locked, currently;
+     if there were tokens locked for msg.sender previously,
+     they must have all become unlocked through the passage of time
+     before calling this function.
+         
 ### balanceUnlocked(address who) public view returns (uint256 amount) 
 Returns the amount of tokens that are unlocked i.e. transferrable by the address indicated by `who`
     
